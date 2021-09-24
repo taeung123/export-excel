@@ -31,7 +31,7 @@ class ExportServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('exports_query', ExportsQuery::class);
+        $this->app->bind('export_query', ExportsQuery::class);
         $this->app->bind(ExportsQueryRepository::class, ExportsQueryRepositoryEloquent::class);
     }
 }

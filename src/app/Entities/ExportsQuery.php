@@ -12,7 +12,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 class ExportsQuery extends Model implements Transformable
 {
     use TransformableTrait;
-    protected $table = 'exports_query';
+    protected $table = 'export_query';
     protected $fillable = [
         'slug',
         'query'

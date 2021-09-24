@@ -5,17 +5,12 @@ namespace VCComponent\Laravel\Export\Http\Controllers\Api\Admin;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-//use VCComponent\Laravel\Export\Contracts\Exportable;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
-//use VCComponent\Laravel\Export\Services\Export\Export;
-use VCComponent\Laravel\Export\Traits\ExportTrait;
 use VCComponent\Laravel\Export\Validators\ExportValidator;
 use VCComponent\Laravel\Export\Repositories\ExportsQueryRepository;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
 use VCComponent\Laravel\Export\Exports\Export;
 use Maatwebsite\Excel\Facades\Excel;
-use Carbon\Carbon;
+use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
 class ExportController extends ApiController
 {
@@ -25,16 +20,23 @@ class ExportController extends ApiController
     public function __construct(ExportValidator $validator, ExportsQueryRepository $repository)
     {
         $this->repository  = $repository;
+        $this->entity = $repository->getEntity();
         $this->validator = $validator;
-        if (config('exports_query.auth_middleware.admin.middleware') !== '') {
+        if (config('export_query.auth_middleware.admin.middleware') !== '') {
             $this->middleware(
-                config('exports_query.auth_middleware.admin.middleware'),
-                ['except' => config('exports_query.auth_middleware.admin.except')]
+                config('export_query.auth_middleware.admin.middleware'),
+                ['except' => config('export_query.auth_middleware.admin.except')]
             );
         }
     }
     public function export($slug, Request $request)
     {
+        if (config('export_query.auth_middleware.admin.middleware') !== '') {
+            $user = $this->getAuthenticatedUser();
+            if (!$this->entity->ableToShow($user, $id)) {
+                throw new PermissionDeniedException();
+            }
+        }   
         $export_query = $this->repository->findBySlug($slug);
         if ($export_query == null) {
             throw new Exception("Dữ liệu không tồn tại");
@@ -44,7 +46,7 @@ class ExportController extends ApiController
         foreach ($data_request as $item => $val) {
             $trans[":" . $item] = $val;
         }
-        $tring_query = strtr($export_query->query, $trans); //dd($tring_query);
+        $tring_query = strtr($export_query->query, $trans);
         try {
             $data = DB::select($tring_query);
         } catch (Exception $e) {

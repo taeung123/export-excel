@@ -19,6 +19,7 @@
         }
     },
     "require": {
+        "webpress/core": "^3.0",
         "maatwebsite/excel": "^3.1"
     },
     "require-dev": {

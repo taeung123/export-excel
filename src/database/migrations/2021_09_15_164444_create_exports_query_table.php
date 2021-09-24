@@ -13,7 +13,7 @@ class CreateExportsQueryTable extends Migration
      */
     public function up()
     {
-        Schema::create('exports_query', function (Blueprint $table) {
+        Schema::create('export_query', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('slug');
             $table->text('query');
@@ -28,6 +28,6 @@ class CreateExportsQueryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exports_query');
+        Schema::dropIfExists('export_query');
     }
 }
