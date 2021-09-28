@@ -33,7 +33,7 @@ class ExportController extends ApiController
     {
         if (config('export_query.auth_middleware.admin.middleware') !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user, $id)) {
+            if (!$this->entity->ableToShow($user)) {
                 throw new PermissionDeniedException();
             }
         }   
