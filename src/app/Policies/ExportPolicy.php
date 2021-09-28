@@ -14,26 +14,7 @@ class ExportPolicy implements ExportPolicyInterface
     }
     public function view($user, $model)
     {
-        return $user->hasPermission('view-Export');
+        return $user->hasPermission('view-export');
     }
 
-    public function create($user)
-    {
-        return $user->hasPermission('create-Export');
-    }
-
-    public function updateItem($user, $model)
-    {
-        return $user->hasPermission('update-item-Export');
-    }
-
-    public function update($user)
-    {
-        return $user->hasPermission('update-Export');
-    }
-
-    public function delete($user, $model)
-    {
-        return $user->hasPermission('delete-Export');
-    }
 }

@@ -17,8 +17,4 @@ class ExportsQuery extends Model implements Transformable
         'slug',
         'query'
     ];
-    public function ableToShow($user)
-    {
-        return true;
-    }
 }
