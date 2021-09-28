@@ -11,6 +11,7 @@ use VCComponent\Laravel\Export\Repositories\ExportsQueryRepository;
 use VCComponent\Laravel\Export\Exports\Export;
 use Maatwebsite\Excel\Facades\Excel;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
+use Illuminate\Support\Facades\Gate;
 
 class ExportController extends ApiController
 {
@@ -33,10 +34,10 @@ class ExportController extends ApiController
     {
         if (config('export_query.auth_middleware.admin.middleware') !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user, $id)) {
+            if (Gate::forUser($user)->denies('view', $this->entity)) {
                 throw new PermissionDeniedException();
             }
-        }   
+        }
         $export_query = $this->repository->findBySlug($slug);
         if ($export_query == null) {
             throw new Exception("Dữ liệu không tồn tại");
