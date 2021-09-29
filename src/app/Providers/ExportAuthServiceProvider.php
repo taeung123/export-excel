@@ -5,7 +5,7 @@ namespace VCComponent\Laravel\Export\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use VCComponent\Laravel\Export\Contracts\ExportPolicyInterface;
-use VCComponent\Laravel\Export\Entities\Export;
+use VCComponent\Laravel\Export\Entities\ExportsQuery;
 
 class ExportAuthServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,7 @@ class ExportAuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Export::class => ExportPolicyInterface::class,
+        ExportsQuery::class => ExportPolicyInterface::class,
     ];
 
     /**
