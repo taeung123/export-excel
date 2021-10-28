@@ -43,20 +43,47 @@ class ExportController extends ApiController
             throw new Exception("Dữ liệu không tồn tại");
         }
         $data_request = $request->all();
+
         $trans = [];
+        if ($request->has('status') && $request->status != '') {
+            $trans += [":status_condition" => "="];
+        } else {
+            $trans += [":status_condition" => "<>"];
+        }
+
+        if ($request->has('from_date') && $request->from_date != '') {
+            $trans += [":from_date_condition" => ">="];
+        } else {
+            $trans += [":from_date_condition" => "<>"];
+        }
+
+        if ($request->has('to_date') && $request->to_date != '') {
+            $trans += [":to_date_condition" => "<="];
+        } else {
+            $trans += [":to_date_condition" => "<>"];
+        }
+
+        if ($request->has('position') && $request->position != '') {
+            $trans += [":position_condition" => "="];
+        } else {
+            $trans += [":position_condition" => "<>"];
+        }
+
         foreach ($data_request as $item => $val) {
             $trans[":" . $item] = $val;
         }
+
         $tring_query = strtr($export_query->query, $trans);
+
         try {
-            $data = DB::select($tring_query);
+            $query = DB::select($tring_query);
         } catch (Exception $e) {
+            throw new Exception( $e);
+        }
+        if ($query == null) {
             throw new Exception("Dữ liệu không tồn tại");
         }
-        if ($data == null) {
-            throw new Exception("Dữ liệu không tồn tại");
-        }
-        $label = "export_".$slug."_".date('Y_m_d');
-        return Excel::download(new Export($data), $label.'.xlsx');
+        $label = "export_" . $slug . "_" . date('Y_m_d');
+        return Excel::download(new Export($query), $label . '.xlsx');
     }
 }
