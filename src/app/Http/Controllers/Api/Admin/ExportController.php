@@ -12,7 +12,8 @@ use VCComponent\Laravel\Export\Exports\Export;
 use Maatwebsite\Excel\Facades\Excel;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 use Illuminate\Support\Facades\Gate;
-
+use VCComponent\Laravel\Export\Entities\ExportExcel;
+use VCComponent\Laravel\Export\Transformers\ExportExcelTransformer;
 class ExportController extends ApiController
 {
 
@@ -83,7 +84,10 @@ class ExportController extends ApiController
         if ($query == null) {
             throw new Exception("Dữ liệu không tồn tại");
         }
-        $label = "export_" . $slug . "_" . date('Y_m_d');
-        return Excel::download(new Export($query), $label . '.xlsx');
+        $file_url = "uploads/export/export_" . $slug . "_" . date('Y_m_d_H_m_s'). '.xlsx';
+        Excel::store(new Export($query), $file_url);
+        $value = new ExportExcel($file_url);
+        $response = $this->response->item($value, new ExportExcelTransformer());
+        return $response;
     }
 }
